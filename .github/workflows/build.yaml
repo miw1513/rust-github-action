@@ -18,7 +18,7 @@ jobs:
 
       - name: Build Rust and Push
         env:
-          USER_DOCKER: ${{ secrets.API_KEY }}
+          USER_DOCKER: ${{ secrets.USER_DOCKER }}
           PASS_DOCKER: ${{ secrets.PASS_DOCKER }}
           TAG: $(git rev-parse --short "$GITHUB_SHA")
         run: |
