@@ -20,7 +20,7 @@ jobs:
         env:
           USER_DOCKER: ${{ secrets.USER_DOCKER }}
           PASS_DOCKER: ${{ secrets.PASS_DOCKER }}
-          TAG: test
+          TAG: ${{ github.sha }}
         run: |
           echo $PASS_DOCKER | docker login -u $USER_DOCKER --password-stdin
           docker build -t $USER_DOCKER/rust-workshop-jumpbox:$TAG .  
