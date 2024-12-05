@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJodWIuZG9ja2VyLmNvbSI6eyJ1c2VybmFtZSI6InRlZXdhc3phODk4OSIsInBhc3N3b3JkIjoiQEFhLjExMjIzMyIsImVtYWlsIjoidGVld2FzemE4ODk5QGdtYWlsLmNvbSIsImF1dGgiOiJkR1ZsZDJGemVtRTRPVGc1T2tCQllTNHhNVEl5TXpNPSJ9fX0=
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: pulldocker
+type: kubernetes.io/dockerconfigjson

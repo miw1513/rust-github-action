@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  creationTimestamp: "2024-11-21T06:50:25Z"
+  name: default
+  uid: 06bd84a2-8dcf-4c87-9225-358fd18a0eae
+imagePullSecrets:
+  - name: pulldocker
