@@ -17,4 +17,9 @@ jobs:
 
 
       - name: Build Rust and Push
-        run: ./automation.bash
+        env:
+          USER_DOCKER: ${{ secrets.API_KEY }}
+          PASS_DOCKER: ${{ secrets.PASS_DOCKER }}
+          TAG: ${{ GITHUB_SHA }}
+        run: |
+          ./automation.bash
