@@ -5,7 +5,11 @@ use std::env;
 #[get("/")]
 async fn index() -> impl Responder {
     dotenv().ok();
-    let greeting = env::var("GREETING").unwrap_or_else(|_| "Hello, World!".to_string());
+    let env = env::var("ENV").ok().unwrap();
+    let env = env::var("ENDPOINT").ok().unwrap();
+    let env = env::var("PORT").ok().unwrap();
+
+
     HttpResponse::Ok().body(greeting)
 }
 
