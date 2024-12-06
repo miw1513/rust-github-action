@@ -4,7 +4,7 @@ COPY ./ ./
 
 
 # RUN cargo check
-# RUN cargo test
+# RUN cargo  test
 RUN apk add musl-dev
 RUN cargo build --release
 
