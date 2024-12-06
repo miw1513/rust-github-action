@@ -25,3 +25,16 @@ jobs:
           echo $PASS_DOCKER | docker login -u $USER_DOCKER --password-stdin
           docker build -t $USER_DOCKER/rust-workshop-jumpbox:$TAG .  
           docker push $USER_DOCKER/rust-workshop-jumpbox:$TAG
+
+
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Uses GitHub-hosted runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+
