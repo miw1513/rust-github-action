@@ -1,16 +1,14 @@
 use actix_web::{get, App, HttpResponse, HttpServer, Responder};
-use dotenv::dotenv;
-use std::env;
+// use dotenv::dotenv;
+// use std::env;
 
 #[get("/")]
 async fn index() -> impl Responder {
-    dotenv().ok();
-    let env = env::var("ENV").ok().unwrap();
-    let env = env::var("ENDPOINT").ok().unwrap();
-    let env = env::var("PORT").ok().unwrap();
-
-
-    HttpResponse::Ok().body(greeting)
+    // dotenv().ok();
+    // let env = env::var("ENV").ok().unwrap();
+    // let env = env::var("ENDPOINT").ok().unwrap();
+    // let env = env::var("PORT").ok().unwrap();
+    HttpResponse::Ok().body("test")
 }
 
 #[actix_web::main]
