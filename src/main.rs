@@ -11,7 +11,7 @@ async fn index() -> impl Responder {
 
 // Return the formatted response including environment details
 HttpResponse::Ok().body(format!(
-    "Server is running on environment: {},  endpoint: {}, port: {}",
+    "Server is running on environment: {},   endpoint: {}, port: {}",
     env, endpoint, port
 ))
 }
