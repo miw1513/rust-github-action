@@ -3,14 +3,8 @@ FROM rust:1-alpine3.19 as builder
 COPY ./ ./
 
 
-# Install necessary development tools
-# RUN apt-get update && apt-get install -y \
-#     build-essential \
-#     libssl-dev \
-#     pkg-config \
-#     && rm -rf /var/lib/apt/lists/*
-RUN cargo check
-RUN cargo test
+# RUN cargo check
+# RUN cargo test
 RUN apk add musl-dev
 RUN cargo build --release
 
