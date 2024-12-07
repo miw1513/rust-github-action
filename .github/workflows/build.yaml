@@ -32,7 +32,6 @@ jobs:
           else
             echo "image_tag=dev-$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_OUTPUT
             echo "env=dev" >> $GITHUB_OUTPUT
-
           fi
 
       - name: Build Rust and Push (Develop)
@@ -77,8 +76,17 @@ jobs:
       - name: Set up variables
         id: variables
         run: |
-
-            echo "ref_tag=dev-123" >> $GITHUB_OUTPUT
+          if [[ $GITHUB_REF == "refs/heads/main" ]]; then
+            echo "ref_tag=dev-${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+            echo "env=uat" >> $GITHUB_OUTPUT
+            echo "image_tag=uat-$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_OUTPUT
+          elif [[ $GITHUB_EVENT_NAME == "push" && $GITHUB_REF == "refs/tags/"* ]]; then
+            echo "image_tag=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+            echo "ref_tag=uat-${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+            echo "env=prd" >> $GITHUB_OUTPUT
+          else
+            echo "image_tag=dev-$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_OUTPUT
+            echo "env=dev" >> $GITHUB_OUTPUT
           fi
 
       - name: Update image from registry
