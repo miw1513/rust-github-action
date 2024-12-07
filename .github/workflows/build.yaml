@@ -27,13 +27,16 @@ jobs:
             echo "ref_tag=dev-${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
             echo "env=uat" >> $GITHUB_OUTPUT
             echo "image_tag=uat-$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_OUTPUT
+            echo "repo=k8s-deployment" >> $GITHUB_OUTPUT
           elif [[ $GITHUB_EVENT_NAME == "push" && $GITHUB_REF == "refs/tags/"* ]]; then
             echo "image_tag=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
             echo "ref_tag=uat-${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
             echo "env=prd" >> $GITHUB_OUTPUT
+            echo "repo=k8s-deployment-prd" >> $GITHUB_OUTPUT
           else
             echo "image_tag=dev-$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_OUTPUT
             echo "env=dev" >> $GITHUB_OUTPUT
+            echo "repo=k8s-deployment" >> $GITHUB_OUTPUT
           fi
 
       - name: Build Rust and Push (Develop)
@@ -72,33 +75,23 @@ jobs:
       - name: Check out my other private repo
         uses: actions/checkout@v4
         with:
-          repository: miw1513/k8s-deployment
+          repository: miw1513/${{ needs.build.outputs.repo }}
           token: ${{ secrets.AUTH_GIT }}
-          path: 'k8s-deployment'
+          path: ${{ needs.build.outputs.repo }}
           ref: main
 
 
-      # - name: Update image from registry
-      #   working-directory: k8s-deployment
-      #   env:
-      #     USER_DOCKER: ${{ secrets.USER_DOCKER }}
-      #   run: |-
-      #     sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
-      #     sudo chmod +x /usr/bin/yq
-      #     export IMAGE=$USER_DOCKER/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
-      #     echo "$IMAGE"
-      #     yq -i '.spec.template.spec.containers[0].image = 123' rust-app/rust-app-deployment.yaml
       
       - name: yq - portable yaml processor
         uses: mikefarah/yq@v4.33.2
         env:
           IMAGE: ${{ secrets.USER_DOCKER }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
         with:
-         cmd: yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE) ' k8s-deployment/rust-app/rust-app-deployment.yaml
+         cmd: yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE) ' ${{ needs.build.outputs.repo }}/rust-app/rust-app-deployment.yaml
           
 
       - name: Update repository
-        working-directory: k8s-deployment
+        working-directory: ${{ needs.build.outputs.repo }}
         run: |-
           git config --global user.email "support@dependabot.com"
           git config --global user.name "dependabot[bot]"
