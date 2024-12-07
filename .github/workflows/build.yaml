@@ -18,9 +18,19 @@ jobs:
     environment: dev
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Build Rust and Push
+      - name: Set up variables
+        id: variables
+        run: |
+          if [[ $GITHUB_REF == "refs/heads/main" ]]; then
+            echo "image_tag=uat-${{ github.sha }}" >> $GITHUB_OUTPUT
+          elif [[ $GITHUB_EVENT_NAME == "push" && $GITHUB_REF == "refs/tags/"* ]]; then
+            echo "image_tag=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+          else
+            echo "image_tag=dev-${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: Build Rust and Push (Develop)
         env:
           USER_DOCKER: ${{ secrets.USER_DOCKER }}
           PASS_DOCKER: ${{ secrets.PASS_DOCKER }}
@@ -39,7 +49,7 @@ jobs:
 
     steps:
       - name: Check out my other private repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: miw1513/k8s-deployment
           token: ${{ secrets.AUTH_GIT }}
@@ -53,7 +63,7 @@ jobs:
           chmod +x /usr/bin/yq
           export IMAGE_TAG=test123
           echo "$IMAGE_TAG"
-          yq -i '.spec.template.spec.containers[0].image = "$USER_DOCKER/${{ env.IMAGE_NAME }}:'strenv(IMAGE_TAG)'"' rust-app/rust-app-deployment.yaml
+          yq -i '.spec.template.spec.containers[0].image = $USER_DOCKER/${{ env.IMAGE_NAME }}:strenv(IMAGE_TAG)' rust-app/rust-app-deployment.yaml
       
       - name: Update repository
         working-directory: k8s-deployment
