@@ -75,7 +75,7 @@ jobs:
           ref: main
 
       - name: Update image from registry
-        uses: mikefarah/yq@v4.33.2
+        uses: mikefarah/yq@v4.44.6
         working-directory: k8s-deployment
         run: |-
           export IMAGE_TAG=test123
