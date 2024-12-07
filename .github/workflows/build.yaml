@@ -25,10 +25,9 @@ jobs:
           docker build -t $USER_DOCKER/rust-workshop-jumpbox:$TAG .  
           docker push $USER_DOCKER/rust-workshop-jumpbox:$TAG
 
-
   trigger:
-    needs: build
-    if: ${{ github.ref == 'refs/heads/develop' && github.event_name == 'push' }}
+    # needs: build
+    # if: ${{ github.ref == 'refs/heads/develop' && github.event_name == 'push' }}
     name: Update Tag and Deploy
     runs-on: ubuntu-24.04  # Uses GitHub-hosted runner
     environment: dev
