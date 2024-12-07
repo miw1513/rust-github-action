@@ -7,6 +7,12 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+# env:
+#   # Use docker.io for Docker Hub if empty
+#   REGISTRY: ghcr.io
+#   # github.repository as <account>/<repo>
+#   IMAGE_NAME: rust-workshop-jumpbox
+
 jobs:
   build:
     runs-on: ubuntu-24.04  # Uses GitHub-hosted runner
@@ -48,7 +54,6 @@ jobs:
           chmod +x /usr/bin/yq
           export IMAGE_TAG=test123
           echo "$IMAGE_TAG"
-          yq -i '.repository.image = strenv(IMAGE_TAG) 'deployment/cart/values.yaml
           yq -i '.spec.template.spec.containers[0].image = "teewasza8989/rust-workshop-jumpbox:strenv(IMAGE_TAG)"' kubernetes/rust-app-deployment.yaml
       
       - name: Update repository
