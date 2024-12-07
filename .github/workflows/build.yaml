@@ -27,11 +27,12 @@ jobs:
 
 
   trigger:
-    need: build
-    runs-on: ubuntu-24.04  # Uses GitHub-hosted runner
+    needs: build
     if: ${{ github.ref == 'refs/heads/develop' && github.event_name == 'push' }}
     name: Update Tag and Deploy
+    runs-on: ubuntu-24.04  # Uses GitHub-hosted runner
     environment: dev
+
     steps:
       - name: Check out my other private repo
         uses: actions/checkout@v3
