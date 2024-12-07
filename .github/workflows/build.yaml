@@ -28,8 +28,8 @@ jobs:
           TAG: ${{ github.sha }}
         run: |
           echo $PASS_DOCKER | docker login -u $USER_DOCKER --password-stdin
-          docker build -t $USER_DOCKER/rust-workshop-jumpbox:$TAG .  
-          docker push $USER_DOCKER/rust-workshop-jumpbox:$TAG
+          docker build -t $USER_DOCKER/${{ env.IMAGE_NAME }}:$TAG .  
+          docker push $USER_DOCKER/${{ env.IMAGE_NAME }}:$TAG
 
   trigger:
     needs: build
@@ -54,7 +54,7 @@ jobs:
           chmod +x /usr/bin/yq
           export IMAGE_TAG=test123
           echo "$IMAGE_TAG"
-          yq -i '.spec.template.spec.containers[0].image = "teewasza8989/rust-workshop-jumpbox:strenv(IMAGE_TAG)"' kubernetes/rust-app-deployment.yaml
+          yq -i '.spec.template.spec.containers[0].image = "$USER_DOCKER/${{ env.IMAGE_NAME }}:strenv(IMAGE_TAG)"' rust-app/rust-app-deployment.yaml
       
       - name: Update repository
         working-directory: k8s-app
