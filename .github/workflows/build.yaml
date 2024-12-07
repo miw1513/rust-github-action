@@ -75,13 +75,21 @@ jobs:
           ref: main
 
       - name: Update image from registry
+        uses: mikefarah/yq@v4.33.2
         working-directory: k8s-deployment
         run: |-
-          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
-          chmod +x /usr/bin/yq
           export IMAGE_TAG=test123
           echo "$IMAGE_TAG"
-          yq -i '.spec.template.spec.containers[0].image = $USER_DOCKER/${{ env.IMAGE_NAME }}:strenv(IMAGE_TAG)' rust-app/rust-app-deployment.yaml
+          yq -i '.spec.template.spec.containers[0].image = $USER_DOCKER/${{ env.IMAGE_NAME }}:strenv($IMAGE_TAG)' rust-app/rust-app-deployment.yaml 
+
+      # - name: Update image from registry
+      #   working-directory: k8s-deployment
+      #   run: |-
+      #     wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
+      #     chmod +x /usr/bin/yq
+      #     export IMAGE_TAG=test123
+      #     echo "$IMAGE_TAG"
+      #     yq -i '.spec.template.spec.containers[0].image = $USER_DOCKER/${{ env.IMAGE_NAME }}:strenv($IMAGE_TAG)' rust-app/rust-app-deployment.yaml
       
       - name: Update repository
         working-directory: k8s-deployment
