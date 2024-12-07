@@ -9,12 +9,11 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Uses GitHub-hosted runner
-
+    runs-on: ubuntu-24.04  # Uses GitHub-hosted runner
+    environment: dev
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
 
       - name: Build Rust and Push
         env:
@@ -28,13 +27,37 @@ jobs:
 
 
   trigger:
-    runs-on: ubuntu-latest  # Uses GitHub-hosted runner
-
+    need: build
+    runs-on: ubuntu-24.04  # Uses GitHub-hosted runner
+    if: ${{ github.ref == 'refs/heads/develop' && github.event_name == 'push' }}
+    name: Update Tag and Deploy
+    environment: dev
     steps:
       - name: Check out my other private repo
         uses: actions/checkout@v3
         with:
           repository: miw1513/k8s-deployment
           token: ${{ secrets.AUTH_GIT }}
+          path: 'k8s-deployment'
+          ref: main
+
+    - name: Update image from registry
+      working-directory: k8s-deployment
+      run: |-
+        wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
+        chmod +x /usr/bin/yq
+        export IMAGE_TAG=test123
+        echo "$IMAGE_TAG"
+        yq -i '.repository.image = strenv(IMAGE_TAG) 'deployment/cart/values.yaml
+        yq -i '.spec.template.spec.containers[0].image = "teewasza8989/rust-workshop-jumpbox:strenv(IMAGE_TAG)"' kubernetes/rust-app-deployment.yaml
+    
+    - name: Update repository
+      working-directory: k8s-app
+      run: |-
+        git config --global user.email "support@dependabot.com"
+        git config --global user.name "dependabot[bot]"
+        git add .
+        git commit -am "release"
+        git push origin main
 
 
