@@ -95,7 +95,7 @@ jobs:
           USER_DOCKER: ${{ secrets.USER_DOCKER }}
           IMAGE: $USER_DOCKER/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
         with:
-         cmd: yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE_TAG) ' k8s-deployment/rust-app/rust-app-deployment.yaml
+         cmd: yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE) ' k8s-deployment/rust-app/rust-app-deployment.yaml
           
 
       - name: Update repository
