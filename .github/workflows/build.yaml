@@ -78,17 +78,26 @@ jobs:
           ref: main
 
 
-      - name: Update image from registry
-        working-directory: k8s-deployment
+      # - name: Update image from registry
+      #   working-directory: k8s-deployment
+      #   env:
+      #     USER_DOCKER: ${{ secrets.USER_DOCKER }}
+      #   run: |-
+      #     sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
+      #     sudo chmod +x /usr/bin/yq
+      #     export IMAGE=$USER_DOCKER/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
+      #     echo "$IMAGE"
+      #     yq -i '.spec.template.spec.containers[0].image = 123' rust-app/rust-app-deployment.yaml
+      
+      - name: yq - portable yaml processor
+        uses: mikefarah/yq@v4.33.2
         env:
           USER_DOCKER: ${{ secrets.USER_DOCKER }}
-        run: |-
-          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
-          sudo chmod +x /usr/bin/yq
-          export IMAGE=$USER_DOCKER/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
-          echo "$IMAGE"
-          yq -i '.spec.template.spec.containers[0].image = 123' rust-app/rust-app-deployment.yaml
-      
+          IMAGE: $USER_DOCKER/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
+        with:
+         cmd: yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE_TAG) ' k8s-deployment/rust-app/rust-app-deployment.yaml
+          
+
       - name: Update repository
         working-directory: k8s-deployment
         run: |-
