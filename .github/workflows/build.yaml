@@ -94,7 +94,7 @@ jobs:
 
 
       - name: Update image from registry
-        orking-directory: ${{ needs.build.outputs.path_repo }}
+        working-directory: ${{ needs.build.outputs.path_repo }}
         env:
           USER_DOCKER: ${{ secrets.USER_DOCKER }}
         run: |-
@@ -105,7 +105,7 @@ jobs:
           yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE)' rust-app/rust-app-deployment.yaml
       
       - name: Update repository
-        orking-directory: ${{ needs.build.outputs.path_repo }}
+        working-directory: ${{ needs.build.outputs.path_repo }}
         run: |-
           git config --global user.email "support@dependabot.com"
           git config --global user.name "dependabot[bot]"
