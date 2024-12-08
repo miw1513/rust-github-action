@@ -83,7 +83,11 @@ jobs:
           path: ${{ needs.build.outputs.path_repo }}
           ref: main
 
-
+      - name: Update image from registry
+        run: |-
+          ls
+          echo ${{ needs.build.outputs.path_repo }}
+          echo ${{ needs.build.outputs.repo }}
       
       # - name: yq - portable yaml processor
       #   uses: mikefarah/yq@v4.33.2
