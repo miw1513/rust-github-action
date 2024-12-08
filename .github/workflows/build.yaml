@@ -78,56 +78,34 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/develop' && github.event_name == 'push' }}
     name: Update Tag and Deploy
-    runs-on: ubuntu-24.04
-    environment: dev
-
+    runs-on: ubuntu-24.04  # Uses GitHub-hosted runner
     permissions:
       contents: 'read'
       id-token: 'write'
+
     steps:
-      # - name: Check out my other private repo
-      #   uses: actions/checkout@v4
-      #   with:
-      #     repository: ${{ needs.build.outputs.repo }}
-      #     token: ${{ secrets.AUTH_GIT }}
-      #     path: ${{ needs.build.outputs.path_repo }}
-      #     ref: main
+      - name: Check out my other private repo
+        uses: actions/checkout@v4
+        with:
+          repository: miw1513/k8s-deployment
+          token: ${{ secrets.AUTH_GIT }}
+          path: 'k8s-deployment'
+          ref: main
 
-    #  - name: Add commands directory to PATH
-    #     run: |
-    #       echo "/HolismHolding/Commands" >> $GITHUB_PATH
 
-      - name: Select Folder
+      - name: Update image from registry
+        working-directory: k8s-deployment
         env:
-          PATH: ${{ needs.build.outputs.path_repo }}/
+          USER_DOCKER: ${{ secrets.USER_DOCKER }}
         run: |-
-          curl -L https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -o yq
-          chmod +x yq
-          mv yq /usr/local/bin/yq
-
-      # - name: yq - portable yaml processor
-      #   uses: mikefarah/yq@v4.33.2
-      #   env:
-      #     IMAGE: ${{ secrets.USER_DOCKER }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
-      #     PATH: ${{ needs.build.outputs.path_repo }}/rust-app/rust-app-deployment.yaml
-      #   with:
-      #    cmd:  yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE) '  rust-app/rust-app-deployment.yaml
-          
-      - name: Install Yq and edit
-        working-directory: ${{ needs.build.outputs.path_repo }}
-        env:
-          IMAGE: ${{ secrets.USER_DOCKER }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
-          PATH: ${{ needs.build.outputs.path_repo }}/
-        run: |-
-          curl -L https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -o yq
-          chmod +x yq
-          mv yq /usr/local/bin/yq
-          yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE) ' rust-app/rust-app-deployment.yaml
-
-          
-
+          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+          sudo chmod +x /usr/bin/yq
+          export IMAGE=$USER_DOCKER/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
+          echo "$IMAGE"
+          yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE)' rust-app/rust-app-deployment.yaml
+      
       - name: Update repository
-        working-directory: ${{ needs.build.outputs.path_repo }}
+        working-directory: k8s-deployment
         run: |-
           git config --global user.email "support@dependabot.com"
           git config --global user.name "dependabot[bot]"
