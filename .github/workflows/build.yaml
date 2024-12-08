@@ -87,9 +87,9 @@ jobs:
       - name: Check out my other private repo
         uses: actions/checkout@v4
         with:
-          repository: miw1513/k8s-deployment
+          repository: ${{ needs.build.outputs.repo }}
           token: ${{ secrets.AUTH_GIT }}
-          path: 'k8s-deployment'
+          path: ${{ needs.build.outputs.path_repo }}
           ref: main
 
 
