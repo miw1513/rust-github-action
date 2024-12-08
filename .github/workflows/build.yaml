@@ -16,6 +16,8 @@ jobs:
     outputs:
       image_tag: ${{ steps.variables.outputs.image_tag }}
       env: ${{ steps.variables.outputs.env }}
+      repo: ${{ steps.variables.outputs.repo }}
+      path_repo: ${{ steps.variables.outputs.path_repo }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
