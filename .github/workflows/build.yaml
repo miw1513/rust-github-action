@@ -88,23 +88,26 @@ jobs:
         run: |-
           cd $PATH
 
-      - name: yq - portable yaml processor
-        uses: mikefarah/yq@v4.33.2
-        env:
-          IMAGE: ${{ secrets.USER_DOCKER }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
-          PATH: ${{ needs.build.outputs.path_repo }}/rust-app/rust-app-deployment.yaml
-        with:
-         cmd:  yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE) '  rust-app/rust-app-deployment.yaml
-          
-      # - name: Update image from registry
-      #   working-directory: ${{ needs.build.outputs.path_repo }}
+      # - name: yq - portable yaml processor
+      #   uses: mikefarah/yq@v4.33.2
       #   env:
       #     IMAGE: ${{ secrets.USER_DOCKER }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
-      #     PATH: ${{ needs.build.outputs.path_repo }}/
-      #   run: |-
-      #     wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
-      #     chmod +x /usr/bin/yq
-      #     yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE) ' rust-app/rust-app-deployment.yaml
+      #     PATH: ${{ needs.build.outputs.path_repo }}/rust-app/rust-app-deployment.yaml
+      #   with:
+      #    cmd:  yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE) '  rust-app/rust-app-deployment.yaml
+          
+      - name: Update image from registry
+        working-directory: ${{ needs.build.outputs.path_repo }}
+        env:
+          IMAGE: ${{ secrets.USER_DOCKER }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
+          PATH: ${{ needs.build.outputs.path_repo }}/
+        run: |-
+          sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository -y ppa:rmescandon/yq
+          sudo apt-get update
+          sudo apt-get install -y yq
+          yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE) ' rust-app/rust-app-deployment.yaml
 
           
 
