@@ -85,13 +85,17 @@ jobs:
       contents: 'read'
       id-token: 'write'
     steps:
-      - name: Check out my other private repo
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ needs.build.outputs.repo }}
-          token: ${{ secrets.AUTH_GIT }}
-          path: ${{ needs.build.outputs.path_repo }}
-          ref: main
+      # - name: Check out my other private repo
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: ${{ needs.build.outputs.repo }}
+      #     token: ${{ secrets.AUTH_GIT }}
+      #     path: ${{ needs.build.outputs.path_repo }}
+      #     ref: main
+
+    #  - name: Add commands directory to PATH
+    #     run: |
+    #       echo "/HolismHolding/Commands" >> $GITHUB_PATH
 
       - name: Select Folder
         env:
