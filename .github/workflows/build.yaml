@@ -80,12 +80,10 @@ jobs:
     name: Update Tag and Deploy
     runs-on: ubuntu-24.04
     environment: dev
+
     permissions:
       contents: 'read'
       id-token: 'write'
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
-      id-token: write
     steps:
       - name: Check out my other private repo
         uses: actions/checkout@v4
