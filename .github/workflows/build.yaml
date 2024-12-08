@@ -13,6 +13,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-22.04  # Uses GitHub-hosted runner
+    environment: dev
     outputs:
       image_tag: ${{ steps.variables.outputs.image_tag }}
       env: ${{ steps.variables.outputs.env }}
@@ -72,7 +73,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/develop' && github.event_name == 'push' }}
     name: Update Tag and Deploy
     runs-on: ubuntu-22.04  # Uses GitHub-hosted runner
-
+    environment: dev
     steps:
       - name: Check out my other private repo
         uses: actions/checkout@v4
