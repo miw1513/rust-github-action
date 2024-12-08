@@ -12,7 +12,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04  # Uses GitHub-hosted runner
+    runs-on: ubuntu-22.04  # Uses GitHub-hosted runner
     outputs:
       image_tag: ${{ steps.variables.outputs.image_tag }}
       env: ${{ steps.variables.outputs.env }}
@@ -71,10 +71,7 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/develop' && github.event_name == 'push' }}
     name: Update Tag and Deploy
-    runs-on: ubuntu-24.04  # Uses GitHub-hosted runner
-    permissions:
-      contents: 'read'
-      id-token: 'write'
+    runs-on: ubuntu-22.04  # Uses GitHub-hosted runner
 
     steps:
       - name: Check out my other private repo
@@ -103,6 +100,7 @@ jobs:
           wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
           chmod +x /usr/bin/yq
           yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE) ' rust-app/rust-app-deployment.yaml
+
           
 
       - name: Update repository
