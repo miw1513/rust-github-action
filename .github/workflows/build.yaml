@@ -100,8 +100,6 @@ jobs:
         run: |-
           sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
           sudo chmod +x /usr/bin/yq
-          export IMAGE=$USER_DOCKER/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
-          echo "$IMAGE"
           yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE)' rust-app/rust-app-deployment.yaml
       
       - name: Update repository
