@@ -51,16 +51,16 @@ jobs:
             echo "path_repo=k8s-deployment" >> $GITHUB_OUTPUT
           fi
 
-      # - name: Build Rust and Push (Develop)
-      #   if: ${{ github.ref == 'refs/heads/develop'  }}
-      #   env:
-      #     USER_DOCKER: ${{ secrets.USER_DOCKER }}
-      #     PASS_DOCKER: ${{ secrets.PASS_DOCKER }}
-      #     TAG: ${{ steps.variables.outputs.image_tag }}
-      #   run: |
-      #     echo $PASS_DOCKER | docker login -u $USER_DOCKER --password-stdin
-      #     docker build -t $USER_DOCKER/${{ env.IMAGE_NAME }}:$TAG .  
-      #     docker push $USER_DOCKER/${{ env.IMAGE_NAME }}:$TAG
+      - name: Build Rust and Push (Develop)
+        if: ${{ github.ref == 'refs/heads/develop'  }}
+        env:
+          USER_DOCKER: ${{ secrets.USER_DOCKER }}
+          PASS_DOCKER: ${{ secrets.PASS_DOCKER }}
+          TAG: ${{ steps.variables.outputs.image_tag }}
+        run: |
+          echo $PASS_DOCKER | docker login -u $USER_DOCKER --password-stdin
+          docker build -t $USER_DOCKER/${{ env.IMAGE_NAME }}:$TAG .  
+          docker push $USER_DOCKER/${{ env.IMAGE_NAME }}:$TAG
 
       - name: Retag Rust and Push (Uat & Production)
         if: ${{ github.ref == 'refs/heads/main'  }}
