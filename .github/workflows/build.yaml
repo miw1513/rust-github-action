@@ -91,7 +91,7 @@ jobs:
           IMAGE: ${{ secrets.USER_DOCKER }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.image_tag }}
           PATH: ${{ needs.build.outputs.path_repo }}/rust-app/rust-app-deployment.yaml
         with:
-         cmd:  yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE) ' $PATH
+         cmd:  yq -i '.spec.template.spec.containers[0].image = strenv(IMAGE) ' k8s-deployment/rust-app/rust-app-deployment.yaml
           
 
       - name: Update repository
