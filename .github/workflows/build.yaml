@@ -67,7 +67,7 @@ jobs:
           docker push $USER_DOCKER/${{ env.IMAGE_NAME }}:$TAG
 
       - name: Retag Rust and Push (Uat & Production)
-        if: ${{ github.ref == 'refs/heads/main' || $GITHUB_REF == "refs/tags/"*  }}
+        if: ${{ github.ref == 'refs/heads/main' || github.ref == "refs/tags/"*  }}
         env:
           USER_DOCKER: ${{ secrets.USER_DOCKER }}
           PASS_DOCKER: ${{ secrets.PASS_DOCKER }}
@@ -80,7 +80,7 @@ jobs:
 
   trigger:
     needs: build
-    if: ${{ ( github.ref == 'refs/heads/develop' || $GITHUB_REF == "refs/tags/"*) && github.event_name == 'push' }}
+    if: ${{ ( github.ref == 'refs/heads/develop' || github.ref == "refs/tags/"*) && github.event_name == 'push' }}
     name: Update Tag and Deploy
     runs-on: ubuntu-24.04  # Uses GitHub-hosted runner
     permissions:
