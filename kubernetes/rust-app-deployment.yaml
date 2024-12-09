@@ -24,6 +24,5 @@ spec:
           ports:
             - containerPort: 8080
 status: {}
-
 # kubectl run rust-app-test-registry --image=teewasza8989/rust-workshop-jumpbox:0.1.1 --restart=Never
 # kubectl get pod rust-app-test-registry -o=jsonpath='{.spec.imagePullSecrets[0].name}{"\n"}'
