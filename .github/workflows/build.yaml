@@ -4,6 +4,7 @@ name: CI Pipeline
 on:
   push:
     branches: [ main, develop ]
+    tag: [v*]
   pull_request:
     branches: [ main, develop ]
 
@@ -50,6 +51,11 @@ jobs:
             echo "repo=miw1513/k8s-deployment" >> $GITHUB_OUTPUT
             echo "path_repo=k8s-deployment" >> $GITHUB_OUTPUT
           fi
+
+      - name: Show GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
 
       - name: Build Rust and Push (Develop)
         if: ${{ github.ref == 'refs/heads/develop'  }}
