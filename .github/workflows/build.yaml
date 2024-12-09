@@ -34,7 +34,7 @@ jobs:
         id: variables
         run: |
           if [[ $GITHUB_REF == "refs/heads/main" ]]; then
-            echo "ref_tag=dev-${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+            echo "ref_tag=dev-$(git rev-parse --short ${{ github.event.commits[0].id }})" >> $GITHUB_OUTPUT
             echo "env=uat" >> $GITHUB_OUTPUT
             echo "image_tag=uat-$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_OUTPUT
             echo "repo=miw1513/k8s-deployment" >> $GITHUB_OUTPUT
