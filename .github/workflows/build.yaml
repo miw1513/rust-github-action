@@ -3,8 +3,11 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
-    tag: [v*]
+    branches:
+      - main
+      - develop
+    tags:        
+      - v*
 
 env:
   IMAGE_NAME: rust-workshop-jumpbox
