@@ -6,6 +6,7 @@ on:
     branches:
       - main
       - develop
+      - releases/**
     tags:        
       - v*
 
@@ -41,7 +42,7 @@ jobs:
             echo "path_repo=k8s-deployment" >> $GITHUB_OUTPUT
           elif [[ $GITHUB_EVENT_NAME == "push" && $GITHUB_REF == "refs/tags/"* ]]; then
             echo "image_tag=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
-            echo "ref_tag=uat-${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+            echo "ref_tag=uat-$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_OUTPUT
             echo "env=prd" >> $GITHUB_OUTPUT
             echo "repo=miw1513/k8s-deployment-prd" >> $GITHUB_OUTPUT
             echo "path_repo=k8s-deployment-prd" >> $GITHUB_OUTPUT
@@ -52,10 +53,6 @@ jobs:
             echo "path_repo=k8s-deployment" >> $GITHUB_OUTPUT
           fi
 
-      - name: Show GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
 
       - name: Build Rust and Push (Develop)
         if: ${{ github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'  }}
