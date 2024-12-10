@@ -9,7 +9,6 @@ async fn index() -> impl Responder {
     let endpoint = env::var("ENDPOINT").ok().unwrap();
     let port = env::var("PORT").ok().unwrap();
 
-// Return the formatted response including environment details
 HttpResponse::Ok().body(format!(
     "Server is running on environment: {},   endpoint: {}, port: {}",
     env, endpoint, port
